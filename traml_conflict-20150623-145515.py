@@ -7,7 +7,6 @@ from pylab import *
 from scipy.interpolate import interp1d
 from scipy.integrate import simps
 
-
 class Stack:
 
 
@@ -23,42 +22,40 @@ class Stack:
             self.substrate('OW') 
             self.add('ITO')
 	    self.add('CdTe', 500, 'absorber')
-	    self.set_range((min(self.x), max(self.x)))
         self.build()
 
-    def set_range(self, range):
-        self.range = (range)
-	
-    def jsc(self, E=1.51):
-    
+    def plot_spectrum(self, E=1.51):
         unzipped = list(zip(*self.open_file('library/spectrum.csv')))
 	x = unzipped[0]
 	irradiance = unzipped[1]
 	irradiance_interp = interp(self.x, x, irradiance)
 	flux = irradiance_interp*((self.x*1e-9)/(6.63e-34*3e8))
+	plot(self.x, irradiance_interp)
 
 	lim = (6.63e-34*3e8)/(1.602e-19*E*1e-9)
+	
 	index = min(range(len(self.x)), key = lambda i: abs(self.x[i]-lim))
+	print lim, index
+	print len(flux)
+	flux = flux[:lim]
+	print len(flux)
 	
         T = self.get_T(option='a') - self.get_T()
-	T = (T*flux).real
+	T = (T*irradiance_interp).real
 	
-	area = simps(T[:index], self.x[:index]) 
+	plot(self.x, T)
+	area = simps(flux[:index], self.x[:index]) 
 	jsc = 1.602e-19*area/10
+	print 'area=', area
 	print 'jsc=', jsc, '  (mA/cm^2)'
+	show()
 
     def plot(self, o='s'):
-
-	fig = figure(figsize=(12,9))
-	ax = fig.add_subplot(111)
-	
         y1 = self.get_T(option = o).real
         y2 = self.get_R(option = o).real
         
-        ax.plot(self.x, y1)
-        ax.plot(self.x, y2)
-	ax.set_xlim(self.range)
-	
+        plot(self.x, y1)
+        plot(self.x, y2)
         show()
 
     def crunch(self, l):

@@ -1,0 +1,14 @@
+25 May 2015
+
+    + plots of material nk
+	+ Transmittance/Reflectance plots
+	    - TEC
+		- SiO2/Ag/ZnO
+		- SiO2/Ag/ZnO - linear grading (fitted)
+		- SiO2/Ag/ZnO - non-linear grading (fitted)
+	+ Haake Figure of merit
+	+ Jsc optimisation
+	    - CdTe
+		- Perovskite
+
+		
